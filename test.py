@@ -1,5 +1,6 @@
 import os.path
 from subprocess import Popen, PIPE
+from typing import List, Tuple
 
 
 def run_file(py_file: str, ins: str = "") -> str:
@@ -32,3 +33,47 @@ def run_file(py_file: str, ins: str = "") -> str:
     )
     outs, _ = process.communicate(ins.encode())
     return outs.decode()[:-1]  # strip \n at the end
+
+
+def get_samples() -> List[Tuple[str, str]]:
+    """Get the sample inputs/outputs from samples.txt.
+
+    :return: The sample inputs/outputs as a list of tuples of the the form (in, out).
+    """
+
+
+def check_sample(in_: str, expected_out: str) -> Tuple[bool, str]:
+    """Run solution.py and check its output.
+
+    :param in_: The input fed to stdin.
+    :param expected_out: The expected output.
+    :return: The output of the program and a boolean indicating
+             if it is the same as the expected output as a tuple.
+    """
+    out = run_file("solution.py", in_)
+    return out == expected_out, out
+
+
+def check_samples():
+    """Run solution.py and check against the inputs/outputs in samples.txt"""
+    err = False
+    for in_, expected_out in get_samples():
+        try:
+            passed, out = check_sample(in_, expected_out)
+            if not passed:
+                raise ValueError
+        except Exception as e:
+            print("!Failed!\n"
+                  "#Input\n"
+                  f"{in_}\n"
+                  "#Expected Output\n"
+                  f"{expected_out}\n"
+                  "#Output\n"
+                  f"{out}\n"
+                  f"{e}")
+            err = True
+            print(e)
+        else:
+            print("=Passed=")
+    if not err:
+        print("===Passed all tests===")
