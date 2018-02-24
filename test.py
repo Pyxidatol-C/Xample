@@ -32,7 +32,7 @@ def run_file(py_file: str, ins: str = "") -> str:
         stdout=PIPE
     )
     outs, _ = process.communicate(ins.encode())
-    return outs.decode()[:-1]  # strip \n at the end
+    return outs.decode()
 
 
 def get_samples() -> List[Tuple[str, str]]:
@@ -40,6 +40,36 @@ def get_samples() -> List[Tuple[str, str]]:
 
     :return: The sample inputs/outputs as a list of tuples of the the form (in, out).
     """
+    samples = []
+    with open("samples.txt") as f:
+        taking_input = False
+        taking_output = False
+        in_ = ""  # Note: it is assumed that there are no empty inputs
+        out = ""  # or empty outputs
+        for line in f.readlines():
+            if line == "Exemple d'entrée\n" or line == "Sample input":
+                taking_input = True
+                taking_output = False
+                if out:
+                    samples.append((in_, out))
+                    in_, out = "", ""
+                continue
+            if line == "Exemple de sortie\n" or line == "Sample output":
+                taking_input = False
+                taking_output = True
+                continue
+            if line == "Commentaire\n" or line == "Note":
+                taking_input = False
+                taking_output = False
+                samples.append((in_, out))
+                in_, out = "", ""
+
+            if taking_input:
+                in_ += line
+            if taking_output:
+                out += line
+
+    return samples
 
 
 def check_sample(in_: str, expected_out: str) -> Tuple[bool, str]:
@@ -63,7 +93,7 @@ def check_samples():
             if not passed:
                 raise ValueError
         except Exception as e:
-            print("!Failed!\n"
+            print("!!!!!!!!Failed!!!!!!!!\n"
                   "#Input\n"
                   f"{in_}\n"
                   "#Expected Output\n"
@@ -76,4 +106,8 @@ def check_samples():
         else:
             print("=Passed=")
     if not err:
-        print("===Passed all tests===")
+        print("Passed all tests.")
+
+
+if __name__ == '__main__':
+    check_samples()
