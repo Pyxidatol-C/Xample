@@ -64,11 +64,13 @@ def get_samples() -> List[Tuple[str, str]]:
                 samples.append((in_, out))
                 in_, out = "", ""
 
-            if taking_input:
-                in_ += line
-            if taking_output:
-                out += line
-
+            if line != '\n':
+                if taking_input:
+                    in_ += line
+                if taking_output:
+                    out += line
+    if taking_output:
+        samples.append((in_, out))
     return samples
 
 
