@@ -47,18 +47,18 @@ def get_samples() -> List[Tuple[str, str]]:
         in_ = ""  # Note: it is assumed that there are no empty inputs
         out = ""  # or empty outputs
         for line in f.readlines():
-            if line == "Exemple d'entrée\n" or line == "Sample input":
+            if line == "Exemple d'entrée\n" or line == "Sample input\n":
                 taking_input = True
                 taking_output = False
                 if out:
                     samples.append((in_, out))
                     in_, out = "", ""
                 continue
-            if line == "Exemple de sortie\n" or line == "Sample output":
+            if line == "Exemple de sortie\n" or line == "Sample output\n":
                 taking_input = False
                 taking_output = True
                 continue
-            if line == "Commentaire\n" or line == "Note":
+            if line == "Commentaire\n" or line == "Note\n":
                 taking_input = False
                 taking_output = False
                 samples.append((in_, out))
@@ -107,7 +107,7 @@ def check_samples():
             print(e)
         else:
             print("=Passed=")
-    if not err:
+    if not err and get_samples():
         print("Passed all tests.")
 
 
