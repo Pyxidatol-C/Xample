@@ -8,8 +8,6 @@ Check if you have python >= 3.6 installed:
 
     python --version  # Python 3.6.X
     # python3 --version
-    pip install -r requirements.txt 
-    # pip3 install -r requirements.txt
 
 If not, download the latest version at https://www.python.org/downloads/
 
@@ -17,6 +15,11 @@ Clone this repository:
 
     # cd to desired location
     git clone https://github.com/Pyxidatol-C/Xample
+
+Install the dependencies:
+
+    pip install -r requirements.txt 
+    # pip3 install -r requirements.txt
 
 ### Quick Start
 Let's take a simple example: you are trying to solve [this lvl 0 problem](https://prologin.org/train/2017/semifinal/42). 
@@ -50,7 +53,7 @@ Now let us see what will happen when we (deliberately) make a "mistake" in `solu
 # Prologin
 # https://prologin.org/train/2017/semifinal/42
 input()  # optional
-print(54)
+print(6 * 9)
 ```
     
 Output:
@@ -104,9 +107,7 @@ For example, if `samples.txt` looks like this:
     
     2
 
-There are 2 test cases.
-
-In the first one, 
+There is 1 test case: 
 - the input is the part in between the input token `Exemple d'entrée` and the output token `Exemple de sortie`: "1\n"
 - the output is between between the output token `Exemple de sortie` and the stop token end of file: "2\n"
 
