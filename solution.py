@@ -1,5 +1,2 @@
-# Prologin
-# <URL>
-print("Write your solution code below."
-      "Feel free to remove this print and replace <URL> with the url to your problem and delete,"
-      "but do not change the first line unless you know what you are doing.")
+# <Prologin URL (e.g. https://prologin.org/train/2017/semifinal/42)>
+print("Your code from this line on.")

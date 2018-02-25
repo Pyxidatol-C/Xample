@@ -27,7 +27,6 @@ Let's take a simple example: you are trying to solve [this lvl 0 problem](https:
 In `solution.py`, write your solution:
 
 ```python
-# Prologin
 # https://prologin.org/train/2017/semifinal/42
 input()  # optional
 print(42)
@@ -50,7 +49,6 @@ The output (it might take a while to load the samples from the url):
 Now let us see what will happen when we (deliberately) make a "mistake" in `solution.py`:
 
 ```python
-# Prologin
 # https://prologin.org/train/2017/semifinal/42
 input()  # optional
 print(6 * 9)

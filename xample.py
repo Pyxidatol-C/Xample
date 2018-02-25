@@ -17,8 +17,8 @@ def load_samples():
     """Read the samples from the url specified in solution.py and write it to samples.txt."""
     with open("solution.py") as f:
         code = f.readlines()
-    if len(code) >= 2 and code[0] == "# Prologin\n":
-        url = code[1][2:-1]  # 2: to ignore the start of comment ('# ') and :-1 to strip '\n' at the end
+    if len(code) >= 1:
+        url = code[0][2:-1]  # 2: to ignore the start of comment ('# ') and :-1 to strip '\n' at the end
         print(f"Found url: {url}")
         samples = fetch_samples(url)
         with open("samples.txt", "w") as f:
