@@ -42,6 +42,7 @@ The output (it might take a while to load the samples from the url):
     
     Found url: https://prologin.org/train/2017/semifinal/42
     Wrote samples to samples.txt
+    Saved url: https://prologin.org/train/2017/semifinal/42
 
     =Passed=
     Passed all tests
@@ -57,7 +58,7 @@ print(6 * 9)
 Output:
 
     Found url: https://prologin.org/train/2017/semifinal/42
-    Wrote samples to samples.txt
+    To reload, remove the url on the first line in samples.txt.
     
     !!!!!!!!Failed!!!!!!!!
     #Input
@@ -81,13 +82,9 @@ Output:
     
     =Passed=
     Passed all tests.
-
-You may want to use `test.py` over `xample.py` for several reasons:
-- `test.py` works offline (and does not require bs4), while `xample.py` retrieves the samples online;
-- `test.py` assumes that the sample inputs / outputs are available and up to date in `samples.txt`, 
-   while `xample.py` **overwrites** `samplex.txt` with the retrieved samples;
-- `test.py` allows you to add custom test cases - see the next section for the syntax specifications. 
-
+    
+Note that `test.py`'s features are fully included in `xample.py`. 
+The core functions are all kept separately in `test.py` for the ease of implementation during the regional event.  
 
 ## Samples Syntax
 In `samples.txt`, there exist the following tokens:
@@ -97,6 +94,8 @@ In `samples.txt`, there exist the following tokens:
 
 For example, if `samples.txt` looks like this:
 
+    https://prologin.org/train/2017/semifinal/42
+
     Exemple d'entrée
     
     1
@@ -105,9 +104,12 @@ For example, if `samples.txt` looks like this:
     
     2
 
-There is 1 test case: 
+The first line of the file serves as the header, which allows `xample.py` to recognize if the samples are already saved.
+
+The following lines describe a test case:
+
 - the input is the part in between the input token `Exemple d'entrée` and the output token `Exemple de sortie`: "1\n"
-- the output is between between the output token `Exemple de sortie` and the stop token end of file: "2\n"
+- the expected output is between between the output token `Exemple de sortie` and the stop token end of file: "2\n"
 
 Note:
 - **empty lines are ignored**

@@ -17,13 +17,23 @@ def load_samples():
     """Read the samples from the url specified in solution.py and write it to samples.txt."""
     with open("solution.py") as f:
         code = f.readlines()
-    if len(code) >= 1:
+    if code:
         url = code[0][2:-1]  # 2: to ignore the start of comment ('# ') and :-1 to strip '\n' at the end
         print(f"Found url: {url}")
+        with open("samples.txt") as f:
+            local_samples = f.readlines()
+        if local_samples:
+            url_loaded = local_samples[0].strip('\n')
+            if url_loaded == url:
+                print(f"To reload, remove the url on the first line in samples.txt.\n")
+                return
+
         samples = fetch_samples(url)
         with open("samples.txt", "w") as f:
+            f.write(url + '\n')
             f.write(samples)
-        print(f"Wrote samples to samples.txt\n")
+        print(f"Wrote samples to samples.txt")
+        print(f"Saved url: {url}\n")
 
 
 if __name__ == '__main__':
