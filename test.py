@@ -1,3 +1,4 @@
+import sys
 import os.path
 import urllib.request
 from bs4 import BeautifulSoup
@@ -29,7 +30,7 @@ def run_file(py_file: str, ins: str = "") -> str:
 
     # Create subprocess
     process = Popen(
-        ["python", path],
+        ["python3", path],
         stdin=PIPE,
         stdout=PIPE
     )
@@ -152,4 +153,4 @@ def test(file: str = "solution.py"):
 
 
 if __name__ == '__main__':
-    test("2017-semifinal/q6_arbre_mystere.py")
+    test(sys.argv[1])
