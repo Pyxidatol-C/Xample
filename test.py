@@ -1,4 +1,6 @@
 import os.path
+import urllib.request
+from bs4 import BeautifulSoup
 from subprocess import Popen, PIPE
 from typing import List, Tuple
 
@@ -74,7 +76,7 @@ def get_samples() -> List[Tuple[str, str]]:
     return samples
 
 
-def check_sample(in_: str, expected_out: str) -> Tuple[bool, str]:
+def check_sample(in_: str, expected_out: str, file: str = "solution.py") -> Tuple[bool, str]:
     """Run solution.py and check its output.
 
     :param in_: The input fed to stdin.
@@ -82,16 +84,16 @@ def check_sample(in_: str, expected_out: str) -> Tuple[bool, str]:
     :return: The output of the program and a boolean indicating
              if it is the same as the expected output as a tuple.
     """
-    out = run_file("solution.py", in_)
+    out = run_file(file, in_)
     return out == expected_out, out
 
 
-def check_samples():
+def check_samples(file: str = "solution.py"):
     """Run solution.py and check against the inputs/outputs in samples.txt"""
     err = False
     for in_, expected_out in get_samples():
         try:
-            passed, out = check_sample(in_, expected_out)
+            passed, out = check_sample(in_, expected_out, file)
             if not passed:
                 raise ValueError
         except Exception as e:
@@ -111,5 +113,43 @@ def check_samples():
         print("Passed all tests.")
 
 
+def fetch_samples(url: str) -> str:
+    """Fetch the Input/output samples section from the url to the Prologin problem.
+
+    :param url: The URL to the prologin problem.
+                A string of the format "http[s]://prologin.org/train/<YEAR>/<qualification|semifinal>/<EXERCISE_NAME>"
+    :return: The text in the Input/output samples section from the problem's page.
+    """
+    return BeautifulSoup(urllib.request.urlopen(url).read(), "html.parser").find(id="samples").text
+
+
+def load_samples(file: str = "solution.py"):
+    """Read the samples from the url specified in solution.py and write it to samples.txt."""
+    with open(file) as f:
+        code = f.readlines()
+    if code:
+        url = code[0][2:-1]  # 2: to ignore the start of comment ('# ') and :-1 to strip '\n' at the end
+        print(f"Found url: {url}")
+        with open("samples.txt") as f:
+            local_samples = f.readlines()
+        if local_samples:
+            url_loaded = local_samples[0].strip('\n')
+            if url_loaded == url:
+                print(f"To reload, remove the url on the first line in samples.txt.\n")
+                return
+
+        samples = fetch_samples(url)
+        with open("samples.txt", "w") as f:
+            f.write(url + '\n')
+            f.write(samples)
+        print(f"Wrote samples to samples.txt")
+        print(f"Saved url: {url}\n")
+
+
+def test(file: str = "solution.py"):
+    load_samples(file)
+    check_samples(file)
+
+
 if __name__ == '__main__':
-    check_samples()
+    test("2017-semifinal/q6_arbre_mystere.py")
