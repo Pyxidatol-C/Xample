@@ -3,7 +3,7 @@
 > Test your python script against the sample inputs and outputs for the [Prologin](https://prologin.org) problems.
 
 ## Getting Started
-### Prerequisite
+### Prerequisites
 Check if you have python >= 3.6 installed:
 
     python --version  # Python 3.6.X
@@ -24,7 +24,7 @@ Install the dependencies:
 ### Quick Start
 Let's take a simple example: you are trying to solve [this lvl 0 problem](https://prologin.org/train/2017/semifinal/42). 
 
-In `solution.py`, write your solution:
+In `exo_42.py` (you can choose any filename), write your solution:
 
 ```python
 # https://prologin.org/train/2017/semifinal/42
@@ -35,8 +35,10 @@ print(42)
 Then
 
     cd PATH/TO/CURRENT/DIRECTORY
-    python xample.py
-    # python3 xample.py
+    python xample.py exo_42.py
+    # python3 xample.py exo_42.py
+
+`xample.py` and `exo_42.py` can be in different directories, and you can point to either using absolute or relative paths.
 
 The output (it might take a while to load the samples from the url):
     
@@ -75,16 +77,15 @@ Alternatively, you can go on the problem page and manually copy the sample input
 
 Then, 
  
-    python test.py
-    # python3 test.py
+    python xample.py exo_42.py
+    # python3 xample.py exo_42.py
 
 Output:
     
     =Passed=
     Passed all tests.
     
-Note that `test.py`'s features are fully included in `xample.py`. 
-The core functions are all kept separately in `test.py` for the ease of implementation during the regional event.  
+Note that `test.py`'s features are fully included in `xample.py`.
 
 ## Samples Syntax
 In `samples.txt`, there exist the following tokens:
