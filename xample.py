@@ -78,7 +78,7 @@ def get_samples() -> List[Tuple[str, str]]:
 
 
 def check_sample(in_: str, expected_out: str, file: str = "solution.py") -> Tuple[bool, str]:
-    """Run solution.py and check its output.
+    """Runs individual test
 
     :param in_: The input fed to stdin.
     :param expected_out: The expected output.
@@ -90,7 +90,7 @@ def check_sample(in_: str, expected_out: str, file: str = "solution.py") -> Tupl
 
 
 def check_samples(file: str = "solution.py"):
-    """Run solution.py and check against the inputs/outputs in samples.txt"""
+    """Run check_sample over all the examples and display nice error messages"""
     err = False
     for in_, expected_out in get_samples():
         try:
@@ -125,18 +125,23 @@ def fetch_samples(url: str) -> str:
 
 
 def load_samples(file: str = "solution.py"):
-    """Read the samples from the url specified in solution.py and write it to samples.txt."""
+    """Read the samples from the url specified in the solution file and write it to samples.txt."""
     with open(file) as f:
         code = f.readlines()
     if code:
         url = code[0][2:-1]  # 2: to ignore the start of comment ('# ') and :-1 to strip '\n' at the end
         print(f"Found url: {url}")
-        with open("samples.txt") as f:
-            local_samples = f.readlines()
+        try:
+            with open("samples.txt") as f:
+                local_samples = f.readlines()
+        except FileNotFoundError:
+            # file doesn't exist yet
+            local_samples = None
+        
         if local_samples:
             url_loaded = local_samples[0].strip('\n')
             if url_loaded == url:
-                print(f"To reload, remove the url on the first line in samples.txt.\n")
+                print(f"To reload examples, remove the url on the first line in samples.txt.\n")
                 return
 
         samples = fetch_samples(url)
