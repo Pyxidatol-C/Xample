@@ -1,3 +1,4 @@
+import re
 import sys
 import os.path
 import urllib.request
@@ -99,7 +100,7 @@ def check_samples(file: str = "solution.py"):
             if not passed:
                 raise ValueError
         except Exception as e:
-            print("!!!!!!!!Failed!!!!!!!!\n"
+            print("❌ Failed\n"
                   "#Input\n"
                   f"{in_}\n"
                   "#Expected Output\n"
@@ -110,9 +111,11 @@ def check_samples(file: str = "solution.py"):
             err = True
             print(e)
         else:
-            print("=Passed=")
+            print("✅ Passed")
+    if not get_samples():
+        print("⚠️ No tests found.")
     if not err and get_samples():
-        print("Passed all tests.")
+        print("✅ Passed all tests.")
 
 
 def fetch_samples(url: str) -> str:
@@ -129,28 +132,30 @@ def load_samples(file: str = "solution.py"):
     """Read the samples from the url specified in the solution file and write it to samples.txt."""
     with open(file) as f:
         code = f.readlines()
-    if code:
-        url = code[0][2:-1]  # 2: to ignore the start of comment ('# ') and :-1 to strip '\n' at the end
-        print(f"Found url: {url}")
+    if code and re.search(r"https?://prologin.org/train/20\d{2}/(qualification|semifinal)/[a-z_A-Z\d]*", code[0]):
+        url = re.search(r"https?://prologin.org/train/20\d{2}/(qualification|semifinal)/[a-z_A-Z\d]*", code[0])[0]
+        print(f"✅ Found url: {url}")
         try:
             with open("samples.txt") as f:
                 local_samples = f.readlines()
         except FileNotFoundError:
             # file doesn't exist yet
             local_samples = None
-        
+
         if local_samples:
             url_loaded = local_samples[0].strip('\n')
             if url_loaded == url:
-                print(f"To reload examples, remove the url on the first line in samples.txt.\n")
+                print(f"⚠️ To reload examples, remove the url on the first line in samples.txt.\n")
                 return
 
         samples = fetch_samples(url)
         with open("samples.txt", "w") as f:
             f.write(url + '\n')
             f.write(samples)
-        print(f"Wrote samples to samples.txt")
-        print(f"Saved url: {url}\n")
+        print(f"✅ Wrote samples to samples.txt")
+        print(f"✅ Saved url: {url}\n")
+    else:
+        print("⚠️ Failed to locate url on first line of script.")
 
 
 def test(file: str = "solution.py"):
@@ -162,4 +167,4 @@ if __name__ == '__main__':
     try:
         test(sys.argv[1])
     except IndexError:
-        raise FileNotFoundError("Solution filename must be passed as a command line argument")
+        raise FileNotFoundError("⚠️ Solution filename must be passed as a command line argument")
