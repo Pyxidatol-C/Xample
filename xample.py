@@ -77,11 +77,12 @@ def get_samples() -> List[Tuple[str, str]]:
     return samples
 
 
-def check_sample(in_: str, expected_out: str, file: str = "solution.py") -> Tuple[bool, str]:
+def check_sample(in_: str, expected_out: str, file: str) -> Tuple[bool, str]:
     """Runs individual test
 
     :param in_: The input fed to stdin.
     :param expected_out: The expected output.
+    :param file: the path to the python script
     :return: The output of the program and a boolean indicating
              if it is the same as the expected output as a tuple.
     """
@@ -160,7 +161,5 @@ def test(file: str = "solution.py"):
 if __name__ == '__main__':
     try:
         test(sys.argv[1])
-    except IndexError as e:
-        raise Exception(
-            "Solution filename must be passed as a command line argument"
-        ) from e
+    except IndexError:
+        raise FileNotFoundError("Solution filename must be passed as a command line argument")
