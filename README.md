@@ -52,7 +52,7 @@ The output (it might take a while to load the samples from the url):
 
     ✅ Passed
 
-Now let us see what will happen when we (deliberately) make a "mistake" in `solution.py`:
+Now let us see what will happen when we (deliberately) make a "mistake":
 
 ```python
 # https://prologin.org/train/2017/semifinal/42
@@ -92,4 +92,4 @@ If `samples.json` was already populated, `xample.py` will automatically use the 
     }
 
 Note:
-- the `\n` character at the end is kept. (I'm not sure why ?)
+- the `\n` character at the end is kept (used as the input terminator)
