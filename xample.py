@@ -83,26 +83,25 @@ def get_samples() -> List[Tuple[str, str]]:
     return samples
 
 
-def check_sample(in_: str, expected_out: str, file: str) -> Tuple[bool, str]:
-    """Runs individual test
+def check_sample(in_: str, expected_out: str, py_file: str) -> Tuple[bool, str]:
+    """Run individual test.
 
     :param in_: The input fed to stdin.
     :param expected_out: The expected output.
-    :param file: the path to the python script
+    :param py_file: the path to the python script
     :return: The output of the program and a boolean indicating
              if it is the same as the expected output as a tuple.
     """
-    out = run_file(file, in_)
+    out = run_file(py_file, in_)
     return out == expected_out, out
 
 
-def check_samples(file: str):
-    """Run check_sample over all the examples and display nice error messages"""
-    err = False
+def check_samples(py_file: str):
+    """Run check_sample over all the examples and display nice error messages."""
     for in_, expected_out in get_samples():
         out = ""
         try:
-            passed, out = check_sample(in_, expected_out, file)
+            passed, out = check_sample(in_, expected_out, py_file)
             if not passed:
                 raise ValueError
         except Exception as e:
@@ -115,13 +114,10 @@ def check_samples(file: str):
             print(out.strip('\n'))
             print("#Error")
             print(e)
-            err = True
         else:
             print("✅ Passed")
     if not get_samples():
         print("⚠️ No tests found.")
-    if not err and get_samples():
-        print("✅ Passed all tests.")
 
 
 def fetch_samples(url: str) -> str:
@@ -134,10 +130,14 @@ def fetch_samples(url: str) -> str:
     return BeautifulSoup(urllib.request.urlopen(url).read(), "html.parser").find(id="samples").text
 
 
-def load_samples(file: str):
-    """Read the samples from the url specified in the solution file and write it to samples.txt."""
+def load_samples(py_file: str) -> bool:
+    """Read the samples from the url specified in first one of the solution file and write it to samples.txt.
+
+    :param py_file: The path to the solution python script.
+    :return: True if the samples are successfully loaded from the specified url; False otherwise.
+    """
     print('--')
-    with open(file) as f:
+    with open(py_file) as f:
         code = f.readlines()
     if code and re.search(r"https?://prologin.org/train/20\d{2}/(qualification|semifinal)/[a-z_A-Z\d]*", code[0]):
         url = re.search(r"https?://prologin.org/train/20\d{2}/(qualification|semifinal)/[a-z_A-Z\d]*", code[0])[0]
@@ -154,7 +154,7 @@ def load_samples(file: str):
             if url_loaded == url:
                 print(f"⚠️ To reload examples, remove the url on the first line in samples.txt.")
                 print("--\n")
-                return
+                return True
 
         samples = fetch_samples(url)
         with open("samples.txt", "w") as f:
@@ -163,17 +163,25 @@ def load_samples(file: str):
         print(f"✅ Wrote samples to samples.txt")
         print(f"✅ Saved url: {url}")
     else:
-        print("⚠️ Failed to locate url on first line of script.")
+        print("❌️ Failed to locate url on first line of script.")
+        print('--\n')
+        return False
     print("--\n")
+    return True
 
 
-def test(file: str):
-    load_samples(file)
-    check_samples(file)
+def test(py_file: str):
+    if load_samples(py_file):
+        check_samples(py_file)
 
 
 if __name__ == '__main__':
     try:
-        test(sys.argv[1])
+        sys.argv[1]
     except IndexError:
-        raise FileNotFoundError("⚠️ Solution filename must be passed as a command line argument")
+        print("❌️ Path to solution code must be passed as a command line argument.")
+    else:
+        if os.path.isfile(sys.argv[1]):
+            test(sys.argv[1])
+        else:
+            print(f"❌ Cannot find script {sys.argv[1]}.")
