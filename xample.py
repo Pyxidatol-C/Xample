@@ -3,7 +3,7 @@ import sys
 import os.path
 import urllib.request
 from bs4 import BeautifulSoup
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, TimeoutExpired
 from typing import List, Tuple
 
 
@@ -35,8 +35,13 @@ def run_file(py_file: str, ins: str = "") -> str:
         stdin=PIPE,
         stdout=PIPE
     )
-    outs, _ = process.communicate(ins.encode())
-    return outs.decode()
+    try:
+        outs, _ = process.communicate(ins.encode(), timeout=10)
+    except TimeoutExpired as e:
+        process.kill()
+        raise e
+    else:
+        return outs.decode()
 
 
 def get_samples() -> List[Tuple[str, str]]:
@@ -91,25 +96,26 @@ def check_sample(in_: str, expected_out: str, file: str) -> Tuple[bool, str]:
     return out == expected_out, out
 
 
-def check_samples(file: str = "solution.py"):
+def check_samples(file: str):
     """Run check_sample over all the examples and display nice error messages"""
     err = False
     for in_, expected_out in get_samples():
+        out = ""
         try:
             passed, out = check_sample(in_, expected_out, file)
             if not passed:
                 raise ValueError
         except Exception as e:
-            print("❌ Failed\n"
-                  "#Input\n"
-                  f"{in_}\n"
-                  "#Expected Output\n"
-                  f"{expected_out}\n"
-                  "#Output\n"
-                  f"{out}\n"
-                  f"{e}")
-            err = True
+            print("❌ Failed")
+            print("#Input")
+            print(in_.strip('\n'))
+            print("#Expected Output")
+            print(expected_out.strip('\n'))
+            print("#Output")
+            print(out.strip('\n'))
+            print("#Error")
             print(e)
+            err = True
         else:
             print("✅ Passed")
     if not get_samples():
@@ -128,8 +134,9 @@ def fetch_samples(url: str) -> str:
     return BeautifulSoup(urllib.request.urlopen(url).read(), "html.parser").find(id="samples").text
 
 
-def load_samples(file: str = "solution.py"):
+def load_samples(file: str):
     """Read the samples from the url specified in the solution file and write it to samples.txt."""
+    print('--')
     with open(file) as f:
         code = f.readlines()
     if code and re.search(r"https?://prologin.org/train/20\d{2}/(qualification|semifinal)/[a-z_A-Z\d]*", code[0]):
@@ -145,7 +152,8 @@ def load_samples(file: str = "solution.py"):
         if local_samples:
             url_loaded = local_samples[0].strip('\n')
             if url_loaded == url:
-                print(f"⚠️ To reload examples, remove the url on the first line in samples.txt.\n")
+                print(f"⚠️ To reload examples, remove the url on the first line in samples.txt.")
+                print("--\n")
                 return
 
         samples = fetch_samples(url)
@@ -153,12 +161,13 @@ def load_samples(file: str = "solution.py"):
             f.write(url + '\n')
             f.write(samples)
         print(f"✅ Wrote samples to samples.txt")
-        print(f"✅ Saved url: {url}\n")
+        print(f"✅ Saved url: {url}")
     else:
         print("⚠️ Failed to locate url on first line of script.")
+    print("--\n")
 
 
-def test(file: str = "solution.py"):
+def test(file: str):
     load_samples(file)
     check_samples(file)
 
