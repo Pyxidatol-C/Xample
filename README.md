@@ -42,12 +42,15 @@ Then
 
 The output (it might take a while to load the samples from the url):
     
-    Found url: https://prologin.org/train/2017/semifinal/42
-    Wrote samples to samples.txt
-    Saved url: https://prologin.org/train/2017/semifinal/42
 
-    =Passed=
-    Passed all tests
+    exo_42.py
+    ✅ Found url: https://prologin.org/train/2017/semifinal/42
+    ⚠️ Cannot read samples.json; the file is reinitialized.
+    ✅ Wrote samples to samples.json
+    ✅ Saved url: https://prologin.org/train/2017/semifinal/42
+    --
+
+    ✅ Passed
 
 Now let us see what will happen when we (deliberately) make a "mistake" in `solution.py`:
 
@@ -58,61 +61,35 @@ print(6 * 9)
 ```
     
 Output:
-
-    Found url: https://prologin.org/train/2017/semifinal/42
-    To reload, remove the url on the first line in samples.txt.
     
-    !!!!!!!!Failed!!!!!!!!
+    exo_42.py
+    ✅ Found url: https://prologin.org/train/2017/semifinal/42
+    ⚠️ Reading examples from samples.json; delete entry in samples.json to reload.
+    --
+
+    ❌ Failed
     #Input
     QUEL EST LE PRODUIT DE SIX PAR NEUF
-    
     #Expected Output
     42
-    
     #Output
     54
+    #Error
  
 ### Offline Usage
-Alternatively, you can go on the problem page and manually copy the sample inputs / outputs to `samples.txt`.
-
-Then, 
- 
-    python xample.py exo_42.py
-    # python3 xample.py exo_42.py
-
-Output:
-    
-    =Passed=
-    Passed all tests.
-    
-Note that `test.py`'s features are fully included in `xample.py`.
+If `samples.json` was already populated, `xample.py` will automatically use the data there instead of redownloading, which allows offline use.
 
 ## Samples Syntax
-In `samples.txt`, there exist the following tokens:
-- input: `Exemple d'entrée`, `Sample input`
-- output: `Exemple de sortie`, `Sample output`
-- stop: `Commentaire`, `Note`, end of file
+`samples.json`:
 
-For example, if `samples.txt` looks like this:
-
-    https://prologin.org/train/2017/semifinal/42
-
-    Exemple d'entrée
-    
-    1
-    
-    Exemple de sortie
-    
-    2
-
-The first line of the file serves as the header, which allows `xample.py` to recognize if the samples are already saved.
-
-The following lines describe a test case:
-
-- the input is the part in between the input token `Exemple d'entrée` and the output token `Exemple de sortie`: "1\n"
-- the expected output is between between the output token `Exemple de sortie` and the stop token end of file: "2\n"
+    {
+        "https://prologin.org/train/2017/semifinal/42": [
+            {
+                "in": "QUEL EST LE PRODUIT DE SIX PAR NEUF\n",
+                "out": "42\n"
+            }
+        ]
+    }
 
 Note:
-- **empty lines are ignored**
-- the tokens are only recognized when they appear **alone** on a line (i.e. "Sample input " with a space is not a token)
-- the `\n` character at the end is kept. For this purpose keep an empty line at the end of `samples.txt` 
+- the `\n` character at the end is kept. (I'm not sure why ?)
