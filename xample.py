@@ -14,7 +14,6 @@ def run_file(py_file: str, ins: str = "") -> str:
     """Run python script with optional input to stdin and return output from stdout.
 
     :param py_file: The path to the python script.
-    :raise FileNotFoundError: When path 'py_file' cannot be resolved.
     :param ins: The input fed to stdin as a string.
                 Defaults to empty string (no input).
     :return: The output from stdout as a string.
@@ -38,7 +37,7 @@ def process_samples(raw_text: str) -> List[Dict[str, str]]:
     """Convert the raw sample text into a list of {'in': in, 'out', out}.
 
     :param raw_text: The raw sample text to be processed.
-    :return: The sample inputs/outputs as a list of tuples of the the form (in, out).
+    :return: The sample inputs/outputs as a list of {'in': in, 'out': out}.
     """
     samples = []
     taking_input = False
@@ -74,7 +73,7 @@ def process_samples(raw_text: str) -> List[Dict[str, str]]:
 
 
 def check_sample(in_: str, expected_out: str, py_file: str) -> Tuple[bool, str]:
-    """Run individual test.
+    """Run individual test: compare the output of py_file when run with in_ with expected_output.
 
     :param in_: The input fed to stdin.
     :param expected_out: The expected output.
