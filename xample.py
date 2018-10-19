@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import re
 import sys
 import json
@@ -129,7 +130,7 @@ def get_samples(py_file: str) -> List[Dict[str, str]]:
     :return: The samples in samples.json matched by the url on the first line of the script.
     """
     with open(py_file) as f:
-        url = re.search(r"https?://prologin.org/train/20\d{2}/(qualification|semifinal)/[a-z_A-Z\d]*", f.readline())[0]
+        url = re.search(r"https?://prologin.org/train/20\d{2}/(qualification|semifinal)/[-a-z_A-Z\d]*", f.readline())[0]
     with open("samples.json") as f2:
         return json.load(f2)[url]
 
@@ -144,8 +145,8 @@ def load_samples(py_file: str) -> bool:
     print(py_file)
     with open(py_file) as f:
         code = f.readlines()
-    if code and re.search(r"https?://prologin.org/train/20\d{2}/(qualification|semifinal)/[a-z_A-Z\d]*", code[0]):
-        url = re.search(r"https?://prologin.org/train/20\d{2}/(qualification|semifinal)/[a-z_A-Z\d]*", code[0])[0]
+    if code and re.search(r"https?://prologin.org/train/20\d{2}/(qualification|semifinal)/[-a-z_A-Z\d]*", code[0]):
+        url = re.search(r"https?://prologin.org/train/20\d{2}/(qualification|semifinal)/[-a-z_A-Z\d]*", code[0])[0]
         print(f"✅ Found url: {url}")
         try:
             with open("samples.json") as f:
